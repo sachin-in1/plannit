@@ -1,0 +1,117 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  animation: App-logo-spin infinite 20s linear;
+  height: 0px;
+}
+
+.App-header {
+  background-color: #222;
+  height: 60px;
+  padding: 20px;
+  color: white;
+}
+
+.App-title {
+  font-size: 1.5em;
+}
+
+.App-intro {
+  font-size: large;
+}
+
+.navbar {
+ 
+  margin-top: auto;
+  
+}
+#top-filler {
+  margin-bottom: auto;
+}
+
+#nav-container {
+  align-items: flex-end;
+}
+
+@keyframes App-logo-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+
+.jumbotron{
+	align-items: center;
+
+	background-color: white;
+}
+
+#custom-seekbar
+{  
+  cursor: pointer;
+  height: 10px;
+  margin-bottom: 10px;
+  outline: thin solid orange;
+  overflow: hidden;
+  position: relative;
+  width: 400px;
+}
+#custom-seekbar span
+{
+  background-color: green;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 10px;
+  width: 0px;
+}
+
+#indiv
+{  
+  cursor: pointer;
+  align-items: center;
+  height: 10px;
+  overflow: hidden;
+  position: relative;
+  width: 400px;
+}
+#indiv span
+{
+  background-color: black;
+  opacity: 0.5;
+  /* position: relative; */
+  padding-top: 3;
+  left: 0;
+  /* padding-bottom: 3; */
+  height: 5px;
+  width: 0px;
+}
+
+
+#video {
+  position: relative;
+  display: inline-block;
+  
+  /* ie7 inline-block support */
+  *display: inline;
+  *zoom: 1;
+
+  visibility: hidden;
+  z-index: 0;
+}
+
+#over {
+  /* position: absolute; */
+  top: 0px;
+  left: 0px;
+  bottom: 0px;
+  right:0px;
+  z-index: 10;
+  /* background-image: url("../images/Vjs.png"); */
+  /* align-content: center; */
+  background-image: url(http://img.youtube.com/vi/E_cTdhd88mk/0.jpg);
+  /* background-repeat: no-repeat; */
+  /* background-size: cover ; */
+  background-color: #11070700;
+}

@@ -1,0 +1,49 @@
+.modal-off{
+    visibility: hidden;
+    width:0;
+    height:0;
+    position: fixed;
+    top:50vh;
+    left:80vh;
+    transition: 1s visibility width height ease-in-out;
+}
+
+.modal-off .new-modal-central-part{
+    visibility: hidden;
+}
+
+.new-modal-container{
+    /* transition-delay: 0.3s;
+    transition-duration: 1s; */
+    position: fixed;
+    top:0;
+    left:0;
+    background-color: rgba(0, 0, 0, 0.5);
+    width:100vw;
+    height:100vh;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.new-modal-central-part{
+    background-color: white;
+    color:black;
+    width:80%;
+    height:80%;
+    position: relative;
+    padding: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.new-modal-close-button{
+    position: absolute;
+    background-color: tomato;
+    top:0;
+    right:0;
+    margin: 1rem;
+    cursor: pointer;
+}
