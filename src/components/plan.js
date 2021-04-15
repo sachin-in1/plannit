@@ -1,160 +1,61 @@
-import React, { Component } from 'react'
-import { Table } from 'semantic-ui-react';
-import axios from 'axios'
-import TablePeople from './Table/TablePeople'
-import { runtimeconfig_v1beta1 } from 'googleapis';
-class Plan extends Component {
-    constructor() {
-        super();
-        this.state={
-            i:0,done:false,
-        people	:[]
-        }
-        this.fetchPeople = this.fetchPeople.bind(this);
-    }
-    componentDidMount() {
-        this.fetchPeople();    
-    }
-    fetchPeople(list) {
-        axios.get('/user/show')
-        .then((response) => {
-            this.setState({ people: response.data });
-        })
-        .catch((err) => {
-            console.log(err);
-        });
-    }
-    render() {
+import React, { useRef, useEffect } from 'react';
+import * as html2canvas from 'html2canvas';
 
-    let people = this.state.people;
 
-    people = people.map((user) => 
-      <Table.Row key={user._id}>
-        <Table.Cell>{user.username}</Table.Cell>
-        <Table.Cell>{user.password}</Table.Cell>
-      </Table.Row>
-    );
-    people =  [...people].reverse();
-        return(
-                <div  class="jumbotron">
-                    <br/>
-                    <!DOCTYPE html> 
-<html> 
+function captureScreenshot(rootElem) {
+    alert("Now.. Preparing Screenshot");
+    console.log(rootElem);
 
-<head> 
-	<title> 
-		How to convert an HTML element 
-		or document into image ? 
-	</title> 
-	
-	<script src= 
-"https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"> 
-	</script> 
-	
-	<script src= 
-"https://files.codepedia.info/files/uploads/iScripts/html2canvas.js"> 
-	</script> 
-</head> 
-
-<body> 
-	<center> 
-	<h2 style="color:green"> 
-		GeeksForGeeks 
-	</h2> 
-	
-	<h2 style="color:purple"> 
-		Convert div to image 
-	</h2> 
-	
-	<div id="html-content-holder" style="background-color: #F0F0F1; 
-				color: #00cc65; width: 500px;padding-left: 25px; 
-				padding-top: 10px;"> 
-		
-		<strong> 
-			GeeksForGeeks 
-		</strong> 
-		
-		<hr/> 
-		
-		<h3 style="color: #3e4b51;"> 
-			ABOUT US 
-		</h3> 
-	
-		<p style="color: #3e4b51;"> 
-			<b>GeeksForGeeks</b> is a portal and a forum 
-			for many tutorials focusing on Programming 
-			ASP.Net, C#, jQuery, AngularJs, Gridview, MVC, 
-			Ajax, Javascript, XML, MS SQL-Server, NodeJs, 
-			Web Design, Software and much more 
-		</p> 
-	
-		<p style="color: #3e4b51;"> 
-			How many times were you frustrated while 
-			looking out for a good collection of 
-			programming/algorithm/interview questions? 
-			What did you expect and what did you get? 
-			This portal has been created to provide 
-			well written, well thought and well 
-			explained solutions for selected questions. 
-		</p> 
-	</div> 
-
-	<input id="btn-Preview-Image" type="button"
-				value="Preview" /> 
-		
-	<a id="btn-Convert-Html2Image" href="#"> 
-		Download 
-	</a> 
-
-	<br/> 
-	
-	<h3>Preview :</h3> 
-	
-	<div id="previewImage"></div> 
-	
-	<script> 
-		$(document).ready(function() { 
-		
-			// Global variable 
-			var element = $("#html-content-holder"); 
-		
-			// Global variable 
-			var getCanvas; 
-
-			$("#btn-Preview-Image").on('click', function() { 
-				html2canvas(element, { 
-					onrendered: function(canvas) { 
-						$("#previewImage").append(canvas); 
-						getCanvas = canvas; 
-					} 
-				}); 
-			}); 
-
-			$("#btn-Convert-Html2Image").on('click', function() { 
-				var imgageData = 
-					getCanvas.toDataURL("image/png"); 
-			
-				// Now browser starts downloading 
-				// it instead of just showing it 
-				var newData = imgageData.replace( 
-				/^data:image\/png/, "data:application/octet-stream"); 
-			
-				$("#btn-Convert-Html2Image").attr( 
-				"download", "GeeksForGeeks.png").attr( 
-				"href", newData); 
-			}); 
-		}); 
-	</script> 
-	</center> 
-</body> 
-
-</html>					 
-
-            </div>)
-    }
-    
-    _onReady(event) {
-        // event.target.pauseVideo();
-      }
+    html2canvas(rootElem).then(canvas => {
+		var img = canvas.toDataURL("image/png")
+		window.open(img);
+    });
 }
-export default Plan
+
+function Plan() 
+{
+	const canvas = useRef(null);
+	let ctx = null;
+
+   
+	// initialize the canvas context
+	useEffect(() => {
+	  // dynamically assign the width and height to canvas
+	  const canvasEle = canvas.current;
+	  canvasEle.width = canvasEle.clientWidth;
+	  canvasEle.height = canvasEle.clientHeight;
+   
+	  // get context of the canvas
+	  ctx = canvasEle.getContext("2d");
+	}, []);
+	useEffect(() => {
+		const r3Info = { x: 260, y: 80, w: 80, h: 120 };
+		drawFillRect(r3Info, { backgroundColor: 'green' });
+	 
+		const r4Info = { x: 50, y: 160, w: 200, h: 100 };
+		drawFillRect(r4Info);
+	  }, []);
+
+	  const drawFillRect = (info, style = {}) => {
+		const { x, y, w, h } = info;
+		const { backgroundColor = 'black' } = style; 
+		ctx.beginPath();
+		ctx.fillStyle = backgroundColor;
+		ctx.fillRect(x, y, w, h);
+	  }
+
+	  const onClick = () => {
+		const elements = canvas.current;
+		captureScreenshot(elements);
+	};
+	return (
+	  <div className="Plan" id="canvas">
+		  <br/><br/><br/><br/>
+		<canvas ref={canvas}></canvas>
+		<br/>
+		<button onClick={onClick}>Process</button>
+	  </div>
+	);
+  }
+   
+  export default Plan;
