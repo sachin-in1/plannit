@@ -14,8 +14,10 @@
     "passport-local": "^1.0.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-rough": "^2.3.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "^4.0.3",
+    "roughjs": "^4.3.1",
     "semantic-ui-react": "^1.2.1",
     "spectre.css": "^0.5.9"
   },
