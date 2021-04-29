@@ -44,7 +44,7 @@ class Navbar extends Component {
                     <div className="col-4 col-mr-auto">
                     <div id="top-filler"></div>
 
-                        <h1 className="App-title">Ok</h1>
+                        {/* <h1 className="App-title"></h1> */}
                     </div>
                 </header>
             </div>

@@ -1,15 +1,44 @@
 import React, { useRef, useEffect, useLayoutEffect, useState } from "react";
 import rough from "roughjs/bundled/rough.esm";
 import * as html2canvas from 'html2canvas';
+import axios from "axios";
 
+function send(json){
+  // let formData = new FormData();
+        // formData.append('image' , img);
+        axios.post("http://localhost:5000/maskImage", json, {
+          headers: {
+    // Overwrite Axios's automatically set Content-Type
+        'Content-Type': 'application/json'
+      }
+      }).then((res) =>
+      {
+      var a=res.request.response.slice(10,res.request.response.length-3)
+      // console.log("a")
+      var image = new Image();
+      image.height = 384;
+      image.width = 384;
+      image.src = 'data:image/png;base64,'+a
+      // console.log(image.src);
+      if(document.getElementById("output").childNodes.length===0){
+      document.getElementById("output").appendChild(image);
+      }
+      else{
+        document.getElementById("output").replaceChild(image,document.getElementById("output").childNodes[0])
+      }
+
+    }
+       )
+        .catch(err => console.log(err,"upload error"));
+  };
 
 function captureScreenshot(rootElem) {
-    alert("Now.. Preparing Screenshot");
-    console.log(rootElem);
+    //console.log(rootElem);
 
     html2canvas(rootElem).then(canvas => {
 		var img = canvas.toDataURL("image/png")
-		window.open(img);
+    // const json = JSON.stringify(img);
+    send(img);
     });
 }
 const generator = rough.generator();
@@ -115,12 +144,12 @@ const useHistory = initialState => {
 
 const Plan = () => {
   const canvas = useRef(null);
-	let context = null;
 
   const [elements, setElements, undo, redo] = useHistory([]);
   const [action, setAction] = useState("none");
   const [tool, setTool] = useState("rectangle");
   const [selectedElement, setSelectedElement] = useState(null);
+
 
   // useEffect(() => {
 	//   // dynamically assign the width and height to canvas
@@ -224,20 +253,28 @@ const Plan = () => {
     const { clientX, clientY } = event;
 
     if (tool === "selection") {
-      const element = getElementAtPosition(clientX, clientY, elements);
+      const offsetX = document.getElementById("canvas").offsetLeft;
+      const offsetY = document.getElementById("canvas").offsetTop;
+      // console.log(clientX-offsetX, clientY-offsetY);
+      const element = getElementAtPosition(clientX-offsetX, clientY-offsetY, elements);
       event.target.style.cursor = element ? cursorForPosition(element.position) : "default";
     }
 
     if (action === "drawing") {
       const index = elements.length - 1;
       const { x1, y1 } = elements[index];
-      updateElement(index, x1, y1, clientX, clientY, tool);
+      const offsetX = document.getElementById("canvas").offsetLeft;
+      const offsetY = document.getElementById("canvas").offsetTop;
+      // console.log(index, x1, y1, clientX-offsetX, clientY-offsetY, tool);
+      updateElement(index, x1, y1, clientX-offsetX, clientY-offsetY, tool);
     } else if (action === "moving") {
       const { id, x1, x2, y1, y2, type, offsetX, offsetY } = selectedElement;
       const width = x2 - x1;
       const height = y2 - y1;
       const newX1 = clientX - offsetX;
       const newY1 = clientY - offsetY;
+      const offsX = document.getElementById("canvas").offsetLeft;
+      const offsY = document.getElementById("canvas").offsetTop;
       updateElement(id, newX1, newY1, newX1 + width, newY1 + height, type);
     } else if (action === "resizing") {
       const { id, type, position, ...coordinates } = selectedElement;
@@ -259,16 +296,29 @@ const Plan = () => {
     setSelectedElement(null);
   };
 
+
+
+
+  const roomnums = ["1","2","3","4"]
+  const gort = ["G","T"]
+  const roomnumlist =roomnums.map((item, i) => {
+    return (
+      <option key={i} value={item}>{item}</option>
+    );
+  });
+  const gortlist =gort.map((item, i) => {
+    return (
+      <option key={i} value={item}>{item}</option>
+    );
+  });
+
+
+  // console.log(imaaage);
+
   return (
     <div>
-      <div style={{ position: "fixed" }}>
-        <input
-          type="radio"
-          id="selection"
-          checked={tool === "selection"}
-          onChange={() => setTool("selection")}
-        />
-        <label htmlFor="selection">Selection</label>
+       {/* style={{ position: "fixed" }} */}
+      <div className="toolselector">
         {/* <input type="radio" id="line" checked={tool === "line"} onChange={() => setTool("line")} />
         <label htmlFor="line">Line</label> */}
         <input
@@ -277,25 +327,47 @@ const Plan = () => {
           checked={tool === "rectangle"}
           onChange={() => setTool("rectangle")}
         />
-        <label htmlFor="rectangle">Rectangle</label>
+        <label htmlFor="rectangle">Rectangle &nbsp; &nbsp;</label>
+        <input
+          type="radio"
+          id="selection"
+          checked={tool === "selection"}
+          onChange={() => setTool("selection")}
+        />
+        <label htmlFor="selection">Selection</label>
       </div>
-      <div style={{ position: "fixed", bottom: 0, padding: 10 }}>
-        <button onClick={undo}>Undo</button>
-        <button onClick={redo}>Redo</button>
-      </div>
+      {/* style={{ position: "fixed", bottom: 0, padding: 10 }} */}
       <br/>
+      
       <div className="Plan">
       <canvas
         id="canvas" ref={canvas}
-        width={window.innerWidth}
-        height={window.innerHeight}
+        width={384}
+        height={384}
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
       >
       </canvas>
-      <button onClick={screens}>Process</button>
+      <button className="process" onClick={screens}>Process</button>
+      <div id="output" className="output"></div>
       </div>
+      <div>
+        <button className="urdo" onClick={undo}>Undo</button>
+        <button className="urdo" onClick={redo}>Redo</button>
+      </div>
+      <div style={{margin:10+'px',marginLeft:30+'px'}}>
+        No.of Rooms : 
+      <select>
+				{roomnumlist}
+			</select>
+        <br/>
+          Ground Floor or Top Floor :
+      <select>
+				{gortlist}
+			</select>
+      </div>
+      
     </div>
   );
 };
