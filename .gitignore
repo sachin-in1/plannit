@@ -9,6 +9,7 @@
 # production
 /build
 
+/checkpoints
 # misc
 .DS_Store
 .env.local

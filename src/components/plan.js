@@ -2,11 +2,31 @@ import React, { useRef, useEffect, useLayoutEffect, useState } from "react";
 import rough from "roughjs/bundled/rough.esm";
 import * as html2canvas from 'html2canvas';
 import axios from "axios";
+import Select from 'react-select';
 
-function send(json){
+
+
+
+const gort = [
+    {label: "G", value: "G" },
+    {label: "T", value: "T" }
+]
+const nums = [
+  { label: "1", value: 1 },
+  { label: "2", value: 2 },
+  { label: "3", value: 3 },
+  { label: "4", value: 4 }
+];
+
+
+function send(json,val,valfloor){
   // let formData = new FormData();
         // formData.append('image' , img);
-        axios.post("http://localhost:5000/maskImage", json, {
+        if(val===null)
+        val={label:"1",value:"1"}
+        if(valfloor===null)
+          valfloor={label:"G",value:"G"}
+        axios.post("http://localhost:5000/maskImage", val.value+valfloor.value+json, {
           headers: {
     // Overwrite Axios's automatically set Content-Type
         'Content-Type': 'application/json'
@@ -32,15 +52,6 @@ function send(json){
         .catch(err => console.log(err,"upload error"));
   };
 
-function captureScreenshot(rootElem) {
-    //console.log(rootElem);
-
-    html2canvas(rootElem).then(canvas => {
-		var img = canvas.toDataURL("image/png")
-    // const json = JSON.stringify(img);
-    send(img);
-    });
-}
 const generator = rough.generator();
 
 const createElement = (id, x1, y1, x2, y2, type) => {
@@ -150,7 +161,32 @@ const Plan = () => {
   const [tool, setTool] = useState("rectangle");
   const [selectedElement, setSelectedElement] = useState(null);
 
-
+  const [selectednumOption, setSelectednumOption] = useState(null);
+  const [selectedfloorOption, setSelectedfloorOption] = useState(null);
+  // handle onChange event of the dropdown
+  const handlenumChange = e => {
+    setSelectednumOption(e);
+  }
+  const checkselectednumOption = () => {
+    return selectednumOption;
+  }  
+  const handlefloorChange = e => {
+    setSelectedfloorOption(e);
+  }
+  const checkselectedfloorOption = () => {
+    return selectedfloorOption;
+  }
+  
+function captureScreenshot(rootElem) {
+  //console.log(rootElem);
+  var val = checkselectednumOption();
+  var valfloor = checkselectedfloorOption();
+  html2canvas(rootElem).then(canvas => {
+  var img = canvas.toDataURL("image/png")
+  // const json = JSON.stringify(img);
+  send(img,val,valfloor);
+  });
+}
   // useEffect(() => {
 	//   // dynamically assign the width and height to canvas
 	//   const canvasEle = canvas.current;
@@ -273,8 +309,8 @@ const Plan = () => {
       const height = y2 - y1;
       const newX1 = clientX - offsetX;
       const newY1 = clientY - offsetY;
-      const offsX = document.getElementById("canvas").offsetLeft;
-      const offsY = document.getElementById("canvas").offsetTop;
+      // const offsX = document.getElementById("canvas").offsetLeft;
+      // const offsY = document.getElementById("canvas").offsetTop;
       updateElement(id, newX1, newY1, newX1 + width, newY1 + height, type);
     } else if (action === "resizing") {
       const { id, type, position, ...coordinates } = selectedElement;
@@ -297,23 +333,6 @@ const Plan = () => {
   };
 
 
-
-
-  const roomnums = ["1","2","3","4"]
-  const gort = ["G","T"]
-  const roomnumlist =roomnums.map((item, i) => {
-    return (
-      <option key={i} value={item}>{item}</option>
-    );
-  });
-  const gortlist =gort.map((item, i) => {
-    return (
-      <option key={i} value={item}>{item}</option>
-    );
-  });
-
-
-  // console.log(imaaage);
 
   return (
     <div>
@@ -356,16 +375,30 @@ const Plan = () => {
         <button className="urdo" onClick={undo}>Undo</button>
         <button className="urdo" onClick={redo}>Redo</button>
       </div>
-      <div style={{margin:10+'px',marginLeft:30+'px'}}>
-        No.of Rooms : 
-      <select>
-				{roomnumlist}
-			</select>
+      <div className="selection" style={{margin:10+'px',marginLeft:30+'px'}}>
+        No.of Rooms :&nbsp; &nbsp;
+        <div className="select">
+      <Select 
+      // defaultInputValue={nums[0].value}
+        value={selectednumOption} // set selected value
+        options={nums} // set list of the data
+        onChange={handlenumChange}
+        styles={{bottom:100+'%'}}
+        menuPlacement="auto"
+        /></div>
         <br/>
-          Ground Floor or Top Floor :
-      <select>
-				{gortlist}
-			</select>
+      </div>
+        <div className="selection" style={{margin:10+'px',marginLeft:30+'px'}}>
+          Ground Floor or Top Floor :&nbsp; &nbsp;
+      <div className="select">
+      <Select 
+      // defaultInputValue={gort[0].value}
+        value={selectedfloorOption} // set selected value
+        options={gort} // set list of the data
+        onChange={handlefloorChange}
+        styles={{bottom:100+'%'}}
+        menuPlacement="auto"
+        /></div>
       </div>
       
     </div>

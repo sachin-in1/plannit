@@ -18,7 +18,11 @@ app = Flask(__name__)
 def mask_image():
 	#print(request.data)
 	# print(request.files , file=sys.stderr)
-	img = request.data[22:] ## byte file
+	modelnum = int(str(request.data)[2])
+	floornum = str(request.data)[3]
+	print(modelnum,floornum)
+	img = request.data[24:] ## byte file
+	# print(img)
 	im = Image.open(io.BytesIO(base64.b64decode(img)))
 	#npimg = np.fromstring(file, np.uint8)
 	im.save('./datasets/test/10111.png', 'PNG')
@@ -41,12 +45,19 @@ def mask_image():
 	# img[img > 150] = 0
 	## any random stuff do here
 	
-	os.system("python3 test.py --dataroot ./datasets --direction AtoB --model pix2pix --name plannit")
-	with open("./results/plannit/test_latest/images/10111_fake_B.png", "rb") as img_file:
-		b64_string = base64.b64encode(img_file.read())
-	return jsonify({"image":b64_string})
+	if(modelnum==1 and floornum=="G"):
+		os.system("python3 test.py --dataroot ./datasets --direction AtoB --model pix2pix --name 1room1kitchen")
+		with open("./results/1room1kitchen/test_latest/images/10111_fake_B.png", "rb") as img_file:
+			b64_string = base64.b64encode(img_file.read())
+		return jsonify({"image":b64_string})
+	elif(modelnum==4 and floornum=="T"):
+		os.system("python3 test.py --dataroot ./datasets --direction AtoB --model pix2pix --name 4room1kitchen")
+		with open("./results/4room1kitchen/test_latest/images/10111_fake_B.png", "rb") as img_file:
+			b64_string = base64.b64encode(img_file.read())
+		return jsonify({"image":b64_string})
 	#test.py --dataroot ./datasets/1 --direction AtoB --model pix2pix --name plannit
-
+	else:
+		return jsonify({"image":img})
 
 
 	################################################

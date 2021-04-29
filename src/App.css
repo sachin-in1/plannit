@@ -5,6 +5,7 @@
   font-family: Rancho;
   font-size: 16px;
   height: 100vh;
+  overflow-y: hidden;
 }
 .App-logo {
   animation: App-logo-spin infinite 20s linear;
@@ -112,7 +113,7 @@
  
 canvas {
   align-items:flex-start;
-  margin-top: 10px;
+  margin-top: 0px;
   margin-left: 30px;
   width: 384px;
   height: 384px;
@@ -164,3 +165,8 @@ canvas {
 .Plan{
   display: flex;
 }
+.selection{
+width: 100px;
+display:block ruby;
+}
+.Select-menu-outer { top: auto; bottom: 100%; }
