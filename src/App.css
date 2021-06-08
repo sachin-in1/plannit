@@ -122,11 +122,6 @@ canvas {
   border-radius: 4px;
 }
 .toolselector{
-  margin-top: 10px;
-  margin-left: 10px;
-  max-width: max-content+40px;
-  padding: 5px 10px 5px 10px;
-  background-color: #c4c4c4;
 }
 .toolselector label{
   margin-left: 10px;
@@ -172,4 +167,15 @@ display:block ruby;
 .Select-menu-outer { top: auto; bottom: 100%; }
 .coded{
   margin-left: 20px;
+}
+.holder{
+  display: block ruby;
+  margin-top: 10px;
+  margin-left: 10px;
+  max-width: max-content+40px;
+  padding: 5px 10px 5px 10px;
+  background-color: #c4c4c4;
+}
+.blankk{
+  width: 100px;
 }

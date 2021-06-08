@@ -259,7 +259,7 @@ const Plan = () => {
 
   const updateElement = (id, x1, y1, x2, y2, type) => {
     const updatedElement = createElement(id, x1, y1, x2, y2, type);
-
+    console.log(id,x1,x2,y1,y2);
     const elementsCopy = [...elements];
     elementsCopy[id] = updatedElement;
     setElements(elementsCopy, true);
@@ -267,14 +267,16 @@ const Plan = () => {
 
   const handleMouseDown = event => {
     const { clientX, clientY } = event;
+    var rect = canvas.current.getBoundingClientRect();
+    console.log(clientX, clientY);
     if (tool === "selection") {
-      const element = getElementAtPosition(clientX, clientY, elements);
+      const element = getElementAtPosition(clientX-rect.left, clientY-rect.top, elements);
       if (element) {
         const offsetX = clientX - element.x1;
         const offsetY = clientY - element.y1;
+        console.log(clientX,clientY,element.x1,element.y1);
         setSelectedElement({ ...element, offsetX, offsetY });
         setElements(prevState => prevState);
-
         if (element.position === "inside") {
           setAction("moving");
         } else {
@@ -343,6 +345,7 @@ const Plan = () => {
   return (
     <div>
        {/* style={{ position: "fixed" }} */}
+       <div className="holder">
       <div className="toolselector">
         {/* <input type="radio" id="line" checked={tool === "line"} onChange={() => setTool("line")} />
         <label htmlFor="line">Line</label> */}
@@ -363,6 +366,7 @@ const Plan = () => {
         />
         <label htmlFor="selection">Selection</label>
       </div>
+      <div className="blankk"></div>
       <div className="colorselector">
         {/* <input type="radio" id="line" checked={tool === "line"} onChange={() => setTool("line")} />
         <label htmlFor="line">Line</label> */}
@@ -378,10 +382,11 @@ const Plan = () => {
           type="radio"
           id="selection"
           name="color"
-          checked={color === "grey"}
-          onChange={() => setColor("grey")}
+          checked={color === "white"}
+          onChange={() => setColor("white")}
         />
         <label htmlFor="grey">Stairs</label>
+      </div>
       </div>
       {/* style={{ position: "fixed", bottom: 0, padding: 10 }} */}
       <br/>
