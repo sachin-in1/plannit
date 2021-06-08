@@ -106,7 +106,7 @@ const Plan = () => {
   
 
   const createElement = (id, x1, y1, x2, y2, type) => {
-    const roughElement = generator.rectangle(x1, y1, x2 - x1, y2 - y1, {fill: color==='black'?'black':'white', fillStyle: 'solid'});
+    const roughElement = generator.rectangle(x1, y1, x2 - x1, y2 - y1, {fill: color==='black'?'black':'white',stroke: color==='black'?'black':'white', fillStyle: 'solid'});
       // type === "line"
       //   ? generator.line(x1, y1, x2, y2)
       //   :
