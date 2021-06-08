@@ -46,18 +46,35 @@ def mask_image():
 	## any random stuff do here
 	
 	if(modelnum==1 and floornum=="G"):
-		os.system("python3 test.py --dataroot ./datasets --direction AtoB --model pix2pix --name 1room1kitchen")
-		with open("./results/1room1kitchen/test_latest/images/10111_fake_B.png", "rb") as img_file:
-			b64_string = base64.b64encode(img_file.read())
-		return jsonify({"image":b64_string})
-	elif(modelnum==4 and floornum=="T"):
-		os.system("python3 test.py --dataroot ./datasets --direction AtoB --model pix2pix --name 4room1kitchen")
-		with open("./results/4room1kitchen/test_latest/images/10111_fake_B.png", "rb") as img_file:
-			b64_string = base64.b64encode(img_file.read())
-		return jsonify({"image":b64_string})
+		os.system("python3 test.py --dataroot ./datasets --direction AtoB --model pix2pix --name ground_1")
+		with open("./results/ground_1/test_latest/images/10111_fake_B.png", "rb") as img_file:
+			img = base64.b64encode(img_file.read())
+		# return jsonify({"image":b64_string})
+	elif(modelnum==2 and floornum=="G"):
+		os.system("python3 test.py --dataroot ./datasets --direction AtoB --model pix2pix --name ground_2")
+		with open("./results/ground_2/test_latest/images/10111_fake_B.png", "rb") as img_file:
+			img = base64.b64encode(img_file.read())
+		# return jsonify({"image":b64_string})
+	elif(modelnum==3 and floornum=="G"):
+		os.system("python3 test.py --dataroot ./datasets --direction AtoB --model pix2pix --name ground_3")
+		with open("./results/ground_3/test_latest/images/10111_fake_B.png", "rb") as img_file:
+			img = base64.b64encode(img_file.read())
+		# return jsonify({"image":b64_string})
+	elif(modelnum==4 and floornum=="G"):
+		os.system("python3 test.py --dataroot ./datasets --direction AtoB --model pix2pix --name ground_4")
+		with open("./results/ground_4/test_latest/images/10111_fake_B.png", "rb") as img_file:
+			img = base64.b64encode(img_file.read())
+		# return jsonify({"image":b64_string})
+	elif(modelnum==1 and floornum=="T"):
+		os.system("python3 test.py --dataroot ./datasets --direction AtoB --model pix2pix --name top_1")
+		with open("./results/top_1/test_latest/images/10111_fake_B.png", "rb") as img_file:
+			img = base64.b64encode(img_file.read())
+		# return jsonify({"image":b64_string})
 	#test.py --dataroot ./datasets/1 --direction AtoB --model pix2pix --name plannit
+	# else:
 	else:
-		return jsonify({"image":img})
+		img = img
+	return jsonify({"image":img})
 
 
 	################################################

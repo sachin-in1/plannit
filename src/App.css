@@ -160,7 +160,7 @@ canvas {
   border-radius: 4px;
   color:white;
   align-self: center;
-  margin: 50px;
+  margin: 30px;
 }
 .Plan{
   display: flex;
@@ -170,3 +170,6 @@ width: 100px;
 display:block ruby;
 }
 .Select-menu-outer { top: auto; bottom: 100%; }
+.coded{
+  margin-left: 20px;
+}

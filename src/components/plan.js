@@ -1,9 +1,10 @@
-import React, { useRef, useEffect, useLayoutEffect, useState } from "react";
+import React, {useRef, useEffect, useLayoutEffect, useState } from "react";
 import rough from "roughjs/bundled/rough.esm";
 import * as html2canvas from 'html2canvas';
 import axios from "axios";
 import Select from 'react-select';
-
+import coded from "../images/coded.png"
+import { Radio } from "semantic-ui-react";
 
 
 
@@ -54,82 +55,7 @@ function send(json,val,valfloor){
 
 const generator = rough.generator();
 
-const createElement = (id, x1, y1, x2, y2, type) => {
-  const roughElement = generator.rectangle(x1, y1, x2 - x1, y2 - y1, {fill: 'black', fillStyle: 'solid'});
-    // type === "line"
-    //   ? generator.line(x1, y1, x2, y2)
-    //   :
-  return { id, x1, y1, x2, y2, type, roughElement };
-};
 
-const nearPoint = (x, y, x1, y1, name) => {
-  return Math.abs(x - x1) < 1 && Math.abs(y - y1) < 1 ? name : null;
-};
-
-const positionWithinElement = (x, y, element) => {
-  const { type, x1, x2, y1, y2 } = element;
-  if (type === "rectangle") {
-    const topLeft = nearPoint(x, y, x1, y1, "tl");
-    const topRight = nearPoint(x, y, x2, y1, "tr");
-    const bottomLeft = nearPoint(x, y, x1, y2, "bl");
-    const bottomRight = nearPoint(x, y, x2, y2, "br");
-    const inside = x >= x1 && x <= x2 && y >= y1 && y <= y2 ? "inside" : null;
-    return topLeft || topRight || bottomLeft || bottomRight || inside;
-  }
-  //  else {
-  //   const a = { x: x1, y: y1 };
-  //   const b = { x: x2, y: y2 };
-  //   const c = { x, y };
-  //   const offset = distance(a, b) - (distance(a, c) + distance(b, c));
-  //   const start = nearPoint(x, y, x1, y1, "start");
-  //   const end = nearPoint(x, y, x2, y2, "end");
-  //   const inside = Math.abs(offset) < 1 ? "inside" : null;
-  //   return start || end || inside;
-  // }
-};
-
-const distance = (a, b) => Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2));
-
-const getElementAtPosition = (x, y, elements) => {
-  return elements
-    .map(element => ({ ...element, position: positionWithinElement(x, y, element) }))
-    .find(element => element.position !== null);
-};
-
-
-
-const cursorForPosition = position => {
-  switch (position) {
-    case "tl":
-    case "br":
-    case "start":
-    case "end":
-      return "nwse-resize";
-    case "tr":
-    case "bl":
-      return "nesw-resize";
-    default:
-      return "move";
-  }
-};
-
-const resizedCoordinates = (clientX, clientY, position, coordinates) => {
-  const { x1, y1, x2, y2 } = coordinates;
-  switch (position) {
-    case "tl":
-    case "start":
-      return { x1: clientX, y1: clientY, x2, y2 };
-    case "tr":
-      return { x1, y1: clientY, x2: clientX, y2 };
-    case "bl":
-      return { x1: clientX, y1, x2, y2: clientY };
-    case "br":
-    case "end":
-      return { x1, y1, x2: clientX, y2: clientY };
-    default:
-      return null; //should not really get here...
-  }
-};
 
 const useHistory = initialState => {
   const [index, setIndex] = useState(0);
@@ -159,6 +85,7 @@ const Plan = () => {
   const [elements, setElements, undo, redo] = useHistory([]);
   const [action, setAction] = useState("none");
   const [tool, setTool] = useState("rectangle");
+  const [color, setColor] = useState("black");
   const [selectedElement, setSelectedElement] = useState(null);
 
   const [selectednumOption, setSelectednumOption] = useState(null);
@@ -177,7 +104,86 @@ const Plan = () => {
     return selectedfloorOption;
   }
   
-function captureScreenshot(rootElem) {
+
+  const createElement = (id, x1, y1, x2, y2, type) => {
+    const roughElement = generator.rectangle(x1, y1, x2 - x1, y2 - y1, {fill: color==='black'?'black':'grey', fillStyle: 'solid'});
+      // type === "line"
+      //   ? generator.line(x1, y1, x2, y2)
+      //   :
+    return { id, x1, y1, x2, y2, type, roughElement };
+  };
+  
+  const nearPoint = (x, y, x1, y1, name) => {
+    return Math.abs(x - x1) < 1 && Math.abs(y - y1) < 1 ? name : null;
+  };
+  
+  const positionWithinElement = (x, y, element) => {
+    const { type, x1, x2, y1, y2 } = element;
+    if (type === "rectangle") {
+      const topLeft = nearPoint(x, y, x1, y1, "tl");
+      const topRight = nearPoint(x, y, x2, y1, "tr");
+      const bottomLeft = nearPoint(x, y, x1, y2, "bl");
+      const bottomRight = nearPoint(x, y, x2, y2, "br");
+      const inside = x >= x1 && x <= x2 && y >= y1 && y <= y2 ? "inside" : null;
+      return topLeft || topRight || bottomLeft || bottomRight || inside;
+    }
+    //  else {
+    //   const a = { x: x1, y: y1 };
+    //   const b = { x: x2, y: y2 };
+    //   const c = { x, y };
+    //   const offset = distance(a, b) - (distance(a, c) + distance(b, c));
+    //   const start = nearPoint(x, y, x1, y1, "start");
+    //   const end = nearPoint(x, y, x2, y2, "end");
+    //   const inside = Math.abs(offset) < 1 ? "inside" : null;
+    //   return start || end || inside;
+    // }
+  };
+  
+  const distance = (a, b) => Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2));
+  
+  const getElementAtPosition = (x, y, elements) => {
+    return elements
+      .map(element => ({ ...element, position: positionWithinElement(x, y, element) }))
+      .find(element => element.position !== null);
+  };
+  
+  
+  
+  const cursorForPosition = position => {
+    switch (position) {
+      case "tl":
+      case "br":
+      case "start":
+      case "end":
+        return "nwse-resize";
+      case "tr":
+      case "bl":
+        return "nesw-resize";
+      default:
+        return "move";
+    }
+  };
+  
+  const resizedCoordinates = (clientX, clientY, position, coordinates) => {
+    const { x1, y1, x2, y2 } = coordinates;
+    switch (position) {
+      case "tl":
+      case "start":
+        return { x1: clientX, y1: clientY, x2, y2 };
+      case "tr":
+        return { x1, y1: clientY, x2: clientX, y2 };
+      case "bl":
+        return { x1: clientX, y1, x2, y2: clientY };
+      case "br":
+      case "end":
+        return { x1, y1, x2: clientX, y2: clientY };
+      default:
+        return null; //should not really get here...
+    }
+  };
+
+
+  function captureScreenshot(rootElem) {
   //console.log(rootElem);
   var val = checkselectednumOption();
   var valfloor = checkselectedfloorOption();
@@ -186,7 +192,7 @@ function captureScreenshot(rootElem) {
   // const json = JSON.stringify(img);
   send(img,val,valfloor);
   });
-}
+  }
   // useEffect(() => {
 	//   // dynamically assign the width and height to canvas
 	//   const canvasEle = canvas.current;
@@ -343,6 +349,7 @@ function captureScreenshot(rootElem) {
         <input
           type="radio"
           id="rectangle"
+          name="tools"
           checked={tool === "rectangle"}
           onChange={() => setTool("rectangle")}
         />
@@ -350,10 +357,31 @@ function captureScreenshot(rootElem) {
         <input
           type="radio"
           id="selection"
+          name="tools"
           checked={tool === "selection"}
           onChange={() => setTool("selection")}
         />
         <label htmlFor="selection">Selection</label>
+      </div>
+      <div className="colorselector">
+        {/* <input type="radio" id="line" checked={tool === "line"} onChange={() => setTool("line")} />
+        <label htmlFor="line">Line</label> */}
+        <input
+          type="radio"
+          id="rectangle"
+          name="color"
+          checked={color === "black"}
+          onChange={() => setColor("black")}
+        />
+        <label htmlFor="black">Black &nbsp; &nbsp;</label>
+        <input
+          type="radio"
+          id="selection"
+          name="color"
+          checked={color === "grey"}
+          onChange={() => setColor("grey")}
+        />
+        <label htmlFor="grey">Stairs</label>
       </div>
       {/* style={{ position: "fixed", bottom: 0, padding: 10 }} */}
       <br/>
@@ -370,6 +398,7 @@ function captureScreenshot(rootElem) {
       </canvas>
       <button className="process" onClick={screens}>Process</button>
       <div id="output" className="output"></div>
+      <img className="coded" src={coded} style={{width:200+'px'}}></img>
       </div>
       <div>
         <button className="urdo" onClick={undo}>Undo</button>
